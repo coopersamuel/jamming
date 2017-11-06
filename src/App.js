@@ -2,6 +2,7 @@ import React from 'react';
 import SearchBar from './components/searchBar/searchBar';
 import ResultsList from './components/resultsList/resultsList';
 import Playlist from './components/playlist/playlist';
+import Spotify from './utilities/spotify'
 import './App.css';
 
 // Hardcode for now
@@ -42,12 +43,20 @@ class App extends React.Component {
     // Build this once you have a unique key for every song from Spotify
   }
 
+  searchSpotify(searchTerm) {
+    Spotify.search(searchTerm).then(tracks => {
+      this.setState({
+        tracks : tracks
+      });
+    });
+  }
+
   render() {
     return (
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
         <div className="App">
-          <SearchBar />
+          <SearchBar searchSpotify={this.searchSpotify} />
           <div className="App-playlist">
             <ResultsList tracks={this.state.tracks} handleActionClick={this.handlePlusClick} />
             <Playlist tracks={this.state.selectedTracks} handleActionClick={this.handleMinusClick} />

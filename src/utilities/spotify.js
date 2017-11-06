@@ -15,7 +15,11 @@ let Spotify = {
         }
 
         window.location.assign(`https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&response_type=token`);                
-        
+        // Now grab the access token from the URL
+    },
+
+    search(searchTerm) {
+        // Make sure to call authorize here
     }
 }
 

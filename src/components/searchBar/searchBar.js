@@ -1,6 +1,5 @@
 import React from 'react';
 import './searchBar.css';
-import Spotify from '../../utilities/spotify'
 
 class SearchBar extends React.Component {
     constructor(props) {
@@ -11,7 +10,7 @@ class SearchBar extends React.Component {
         return (
             <div className="SearchBar">
                 <input placeholder="Enter A Song, Album or Artist" />
-                <a onClick={Spotify.authorize}>SEARCH</a>
+                <a onClick={this.props.searchSpotify}>SEARCH</a>
             </div>
         );
     }
