@@ -2,24 +2,31 @@ import apiKeys from '../config';
 
 const clientId = apiKeys.clientId;
 const clientSecret = apiKeys.clientSecret;
-const redirectUri = 'https://localhost:3000/callback/';
-const scopes = 'user-read-private user-read-email';
+const redirectUri = 'https://localhost:3000/';
 let accessToken;
+let expirationTime;
 
 let Spotify = {
     authorize() {
-        if (accessToken) {
-            return new Promise(resolve => {
-                resolve(accessToken);
-            });
-        }
+        let url = window.location.href;
 
-        window.location.assign(`https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}&response_type=token`);                
-        // Now grab the access token from the URL
+        if (accessToken) {
+            return accessToken;
+        } else if (url.match(/access_token=([^&]*)/) && url.match(/expires_in=([^&]*)/)) {
+            accessToken = url.match(/access_token=([^&]*)/);
+            expirationTime = url.match(/expires_in=([^&]*)/);
+
+            // Set the accessToken to empty string when time is up
+            window.setTimeout(() => accessToken = '', expirationTime * 1000);
+            // Remove the accessToken in the URL so that we don't try to grab it again
+            window.history.pushState('Access Token', null, '/');
+        } else {
+            window.location.assign(`https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectUri}`);                            
+        }
     },
 
     search(searchTerm) {
-        // Make sure to call authorize here
+        Spotify.authorize();
     }
 }
 
