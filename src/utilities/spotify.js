@@ -13,8 +13,12 @@ let Spotify = {
         if (accessToken) {
             return accessToken;
         } else if (url.match(/access_token=([^&]*)/) && url.match(/expires_in=([^&]*)/)) {
-            accessToken = url.match(/access_token=([^&]*)/);
-            expirationTime = url.match(/expires_in=([^&]*)/);
+            // Pull out the accessToken from the URL
+            let match = url.match(/access_token=([^&]*)/);
+            accessToken = match[1];
+            // Pull out the expirationTime from the URL
+            match = url.match(/expires_in=([^&]*)/);
+            expirationTime = match[1];
 
             // Set the accessToken to empty string when time is up
             window.setTimeout(() => accessToken = '', expirationTime * 1000);
