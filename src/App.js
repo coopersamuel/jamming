@@ -28,7 +28,8 @@ class App extends React.Component {
 
     this.state = {
       tracks : [],
-      selectedTracks : []
+      selectedTracks : [],
+      playlistName : 'New Playlist'
     };
 
     this.handlePlusClick = this.handlePlusClick.bind(this);    
@@ -51,6 +52,12 @@ class App extends React.Component {
     });
   }
 
+  handleNameChange(event) {
+    this.setState({
+      playlistName : event.target.value
+    });
+  }
+
   async searchSpotify(searchTerm) {
     let searchResults = await Spotify.search(searchTerm);
 
@@ -67,7 +74,7 @@ class App extends React.Component {
           <SearchBar onSearch={this.searchSpotify} />
           <div className="App-playlist">
             <ResultsList tracks={this.state.tracks} handleActionClick={this.handlePlusClick} />
-            <Playlist tracks={this.state.selectedTracks} handleActionClick={this.handleMinusClick} />
+            <Playlist tracks={this.state.selectedTracks} handleActionClick={this.handleMinusClick} playlistName={this.state.playlistName} onInputChange={this.handleNameChange} />
           </div>
         </div>
       </div>
