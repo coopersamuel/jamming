@@ -35,6 +35,7 @@ class App extends React.Component {
     this.handlePlusClick = this.handlePlusClick.bind(this);    
     this.handleMinusClick = this.handleMinusClick.bind(this);
     this.searchSpotify = this.searchSpotify.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
   }
 
   handlePlusClick(eventTrack) {

@@ -1,4 +1,5 @@
 import React from 'react';
+import Track from '../track/track';
 import './tracklist.css';
 
 class Tracklist extends React.Component {
@@ -15,13 +16,7 @@ class Tracklist extends React.Component {
                     let boundTrackClick = this.onTrackAction.bind(this, track);
 
                     return (
-                        <div className="Track">
-                            <div className="Track-information">
-                                <h3>{track.title}</h3>
-                                <p>{track.artist} | {track.album}</p>
-                            </div>
-                            <a className="Track-action" onClick={boundTrackClick}>{this.props.trackAction}</a>
-                        </div>
+                        <Track key={track.id} track={track} trackAction={this.props.trackAction} onTrackAction={boundTrackClick} />
                     );
                 })}
           </div>

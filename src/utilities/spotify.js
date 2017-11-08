@@ -61,19 +61,19 @@ let Spotify = {
         }
     },
 
-    async createSpotifyPlaylist(tracks, playlistName) {
-        try {
-            let request = await fetch( , {});
+    // async createSpotifyPlaylist(tracks, playlistName) {
+    //     try {
+    //         let request = await fetch( , {});
 
-            if (request.ok) {
-                // Success code here
-            }
+    //         if (request.ok) {
+    //             // Success code here
+    //         }
 
-            throw new Error('Request failed.');
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    //         throw new Error('Request failed.');
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 }
 
 export default Spotify;
