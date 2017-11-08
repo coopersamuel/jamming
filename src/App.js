@@ -6,28 +6,28 @@ import Spotify from './utilities/spotify'
 import './App.css';
 
 // Hardcode for now
-const track = {
-  id : '', // need an ID later
-  title : 'Tiny Dancer',
-  artist : 'Elton John',
-  album : 'Madman Across The Water'
-};
+// const track = {
+//   id : '', // need an ID later
+//   title : 'Tiny Dancer',
+//   artist : 'Elton John',
+//   album : 'Madman Across The Water'
+// };
 
-const track2 = {
-  id : '', // need an ID later
-  title : 'Naked As We Came',
-  artist : 'Iron & Wine',
-  album : 'The Shepherd\'s Dog'
-};
+// const track2 = {
+//   id : '', // need an ID later
+//   title : 'Naked As We Came',
+//   artist : 'Iron & Wine',
+//   album : 'The Shepherd\'s Dog'
+// };
 
-const tracks = [track, track2, track, track2, track, track2];
+//const tracks = [track, track2, track, track2, track, track2];
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      tracks : tracks,
+      tracks : [],
       selectedTracks : []
     };
 
@@ -37,16 +37,26 @@ class App extends React.Component {
   }
 
   handlePlusClick(eventTrack) {
-    this.setState({selectedTracks : this.state.selectedTracks.concat(eventTrack)});
+    this.setState({
+      selectedTracks : this.state.selectedTracks.concat(eventTrack)
+    });
   }
 
   handleMinusClick(eventTrack) {
-    // Build this once you have a unique key for every song from Spotify
+    // this isn't working yet...
+    let deleteIndex = this.state.selectedTracks.indexOf(eventTrack);
+    console.log(deleteIndex);
+    this.setState({
+      selectedTracks : this.state.selectedTracks.slice(deleteIndex)
+    });
   }
 
-  searchSpotify(searchTerm) {
-    console.log(searchTerm);
-    //Spotify.search(searchTerm);
+  async searchSpotify(searchTerm) {
+    let searchResults = await Spotify.search(searchTerm);
+
+    this.setState({
+      tracks : searchResults
+    });
   }
 
   render() {

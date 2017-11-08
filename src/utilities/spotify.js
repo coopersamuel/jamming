@@ -2,13 +2,13 @@ import apiKeys from '../config';
 
 const clientId = apiKeys.clientId;
 const clientSecret = apiKeys.clientSecret;
-const redirectUri = 'https://localhost:3000/';
+const redirectUri = 'http://localhost:3000/';
 let accessToken;
-let expirationTime;
 
 let Spotify = {
     authorize() {
         let url = window.location.href;
+        let expirationTime;
 
         if (accessToken) {
             return accessToken;
@@ -29,8 +29,36 @@ let Spotify = {
         }
     },
 
-    search(searchTerm) {
+    async search(searchTerm) {
         Spotify.authorize();
+
+        try {
+            let response = await fetch(`https://api.spotify.com/v1/search?type=track&q=${searchTerm}`, {
+                headers : {Authorization : `Bearer ${accessToken}`}
+            });
+
+            if (response.ok) {
+                let jsonResponse = await response.json();
+
+                if (jsonResponse.tracks) {
+                    return jsonResponse.tracks.items.map(track => {
+                        return {
+                            id: track.id,
+                            title: track.name,
+                            artist: track.artists[0].name,
+                            album: track.album.name,
+                            uri: track.uri
+                        };
+                    });
+                } else {
+                    return [];
+                }
+            }
+
+            throw new Error('Request failed.');
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 
