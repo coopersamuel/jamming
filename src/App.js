@@ -36,20 +36,27 @@ class App extends React.Component {
     this.handleMinusClick = this.handleMinusClick.bind(this);
     this.searchSpotify = this.searchSpotify.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
+    this.createSpotifyPlaylist = this.createSpotifyPlaylist.bind(this);
   }
 
   handlePlusClick(eventTrack) {
-    this.setState({
-      selectedTracks : this.state.selectedTracks.concat(eventTrack)
-    });
+    if (!this.state.selectedTracks.includes(eventTrack)) {
+      let tempTracks = this.state.selectedTracks.slice(); // copies array
+      tempTracks.push(eventTrack); // add new track
+
+      this.setState({
+        selectedTracks : tempTracks // update state
+      });
+    }
   }
 
-  handleMinusClick(eventTrack) {
-    // this isn't working yet...
-    let deleteIndex = this.state.selectedTracks.indexOf(eventTrack);
-    console.log(deleteIndex);
+  handleMinusClick(eventTrack) {    
+    let tempTracks = this.state.selectedTracks.slice(); // copies array
+    let deleteIndex = tempTracks.indexOf(eventTrack); // finds index to delete
+    tempTracks.splice(deleteIndex, 1); // removes track from temp array
+
     this.setState({
-      selectedTracks : this.state.selectedTracks.slice(deleteIndex)
+      selectedTracks : tempTracks // update state
     });
   }
 
@@ -67,6 +74,20 @@ class App extends React.Component {
     });
   }
 
+  async createSpotifyPlaylist() {
+    // Filter out the track URIs
+    let trackUris = this.state.selectedTracks.map(track => {
+      return track.uri;
+    });
+
+    await Spotify.createSpotifyPlaylist(trackUris, this.state.playlistName);
+
+    this.setState({
+      playlistName : 'New Playlist',
+      selectedTracks: []
+    });
+  }
+
   render() {
     return (
       <div>
@@ -75,7 +96,11 @@ class App extends React.Component {
           <SearchBar onSearch={this.searchSpotify} />
           <div className="App-playlist">
             <ResultsList tracks={this.state.tracks} handleActionClick={this.handlePlusClick} />
-            <Playlist tracks={this.state.selectedTracks} handleActionClick={this.handleMinusClick} playlistName={this.state.playlistName} onInputChange={this.handleNameChange} />
+            <Playlist tracks={this.state.selectedTracks} 
+                      handleActionClick={this.handleMinusClick} 
+                      playlistName={this.state.playlistName} 
+                      onInputChange={this.handleNameChange}
+                      onPlaylistSave={this.createSpotifyPlaylist} />
           </div>
         </div>
       </div>

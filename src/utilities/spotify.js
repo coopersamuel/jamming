@@ -61,19 +61,81 @@ let Spotify = {
         }
     },
 
-    // async createSpotifyPlaylist(tracks, playlistName) {
-    //     try {
-    //         let request = await fetch( , {});
+    async createSpotifyPlaylist(trackUris, playlistName) {
+        if (!trackUris || !playlistName) {
+            console.log('triggering');
+            return;
+        }
 
-    //         if (request.ok) {
-    //             // Success code here
-    //         }
+        let authHeader = { Authorization : `Bearer ${accessToken}` };
+        let userId;
+        let playlistId;
 
-    //         throw new Error('Request failed.');
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+        // First retrieve the user's spotify ID
+        try {
+            let response = await fetch('https://api.spotify.com/v1/me', { headers : authHeader });
+
+            if (response.ok) {
+                let jsonResponse = await response.json();
+
+                if (jsonResponse.id) {
+                    userId = jsonResponse.id;
+                }
+            } else {
+                throw new Error('Request failed.');                
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+
+        // Next, create a playlist with the given playlistName and retrieve it's ID
+        try {
+            let response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+                method : 'POST',
+                headers : {
+                    Authorization : `Bearer ${accessToken}`,
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify({ 
+                    name : playlistName,
+                    description : 'Playlist created by the Jammming App' 
+                })
+            });
+
+            if (response.ok) {
+                let jsonResponse = await response.json();
+
+                if (jsonResponse.id) {
+                    playlistId = jsonResponse.id;
+                }
+            } else {
+                throw new Error('Request failed.');                
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+
+        // Finally, POST the array of trackUris to the playlist ID
+        try {
+            let response = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`, {
+                method : 'POST',
+                headers : {
+                    Authorization : `Bearer ${accessToken}`,
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify({ uris : trackUris })
+            });
+
+            if (!response.ok) {
+                throw new Error('Request failed.');
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
 
 export default Spotify;
