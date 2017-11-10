@@ -75,7 +75,7 @@ class App extends React.Component {
   }
 
   async createSpotifyPlaylist() {
-    // Filter out the track URIs
+    // Filter out the track URIs, you don't need to send the whole object
     let trackUris = this.state.selectedTracks.map(track => {
       return track.uri;
     });
